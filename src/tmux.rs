@@ -76,6 +76,7 @@ impl Tmux {
 
         match code {
             "0" => Ok(()),
+            "" => Err("Return code not set".to_string()),
             code => Err(format!("Bad return code -> {code} -> {cmd:?}")),
         }
     }
