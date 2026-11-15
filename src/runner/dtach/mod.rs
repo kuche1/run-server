@@ -1,3 +1,6 @@
+// TODO: is it possible to make it print the output of the program regardless? tbh idk how systemd is going to handle this (
+// imagine the shitshow that is colors and \r)
+
 use crate::util;
 
 const SOCKET: &str = "dtach.sock";
