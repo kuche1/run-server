@@ -1,6 +1,3 @@
-// TODO: add runner preparation as a separate step - simply make all the runners structs
-// TODO: add tmux runner
-
 mod backup;
 mod runner;
 mod util;
@@ -12,6 +9,8 @@ fn main() {
     let backup_folder = &util::expand_tilde("~/server/backup");
 
     //////////////////////////////////////////////////
+
+    let runner = runner::simple::RunnerSimple::new().unwrap();
 
     backup::main(
         server_data_folder,
@@ -31,7 +30,7 @@ fn main() {
         &format!("0.0.0.0:{server_port}"),
     ];
 
-    runner::simple::run(server_data_folder, cmd).unwrap();
+    runner.run(server_data_folder, cmd).unwrap();
     //
     // runner::tmux_ttyd::run(
     //     server_data_folder,
