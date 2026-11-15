@@ -46,9 +46,11 @@ impl Tmux {
         // if the variable name is set to `_` its going to get removed immediately instead
         let _delete_file_return_code = DeleteOnDrop(file_return_code);
 
-        // TODO: see if i need this trap shit
+        let script_get_return_code = format!("\"$@\"; echo $? > {file_return_code}");
+        //
+        ////// this may (should) become an issue again in the future but i will keep it commented out for now
         // `trap : INT` so that ctrl+c only kills the command, and not `bash` (otherwise `echo` never runs)
-        let script_get_return_code = format!("trap : INT; \"$@\"; echo $? > {file_return_code}");
+        // let script_get_return_code = format!("trap : INT; \"$@\"; echo $? > {file_return_code}");
 
         util::run(
             dir,
