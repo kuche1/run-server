@@ -15,9 +15,6 @@ use std::path::PathBuf;
 
 /// Take snapshots of a given folder
 pub struct Args {
-    /// Source folder to copy
-    pub src: PathBuf,
-
     /// Destination to place snapshots into
     pub dst: PathBuf,
 
@@ -35,10 +32,11 @@ struct Snapshot {
     date: DateTime<Utc>,
 }
 
-pub fn main(args: Args) -> anyhow::Result<()> {
+/// `source` - source folder to copy
+pub fn main(source: &str, args: Args) -> anyhow::Result<()> {
     env_logger::init();
 
-    let source = args.src;
+    let source: PathBuf = source.into();
     if !source.exists() {
         anyhow::bail!("Error: Source does not exist: {}", source.display());
     }
