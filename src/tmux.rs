@@ -1,8 +1,7 @@
 use crate::util;
 use std::os::unix::fs::OpenOptionsExt;
 
-const SESSION_NAME: &str = "my-session";
-// TODO: use in ttyd
+pub const SESSION_NAME: &str = "my-session";
 
 const ENV_VAR_USER: &str = "USER";
 
@@ -18,6 +17,8 @@ impl Tmux {
         Ok(Tmux {})
     }
 
+    // TODO: make this stdin and stdout be /dev/null ?
+    // TODO: make the printing less pretty for systemd (unless already automatic)
     pub fn run(&self, dir: &str, cmd: &[&str]) -> Result<(), String> {
         let user = match std::env::var(ENV_VAR_USER) {
             Ok(ok) => ok,
@@ -67,6 +68,9 @@ impl Tmux {
                     "bash",
                 ],
                 cmd,
+                // disable ctrl+b -> trying to handicap tmux so that the connected user cannot break
+                // out of the server terminal (this is not really necessary but its nice to have)
+                &[";", "set", "-g", "prefix", "None"],
             ]
             .concat(),
         )?;
