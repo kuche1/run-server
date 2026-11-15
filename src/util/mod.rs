@@ -1,3 +1,5 @@
+pub mod backup;
+
 use std::process::Command;
 
 pub fn run(dir: &str, cmd: &[&str]) -> Result<(), String> {
