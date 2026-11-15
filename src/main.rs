@@ -1,24 +1,14 @@
-// TODO: Other users on the machine can see the password. --credential asd:fgh is a command-line argument, so ps -ef shows it to every user.
-
 mod backup;
-mod tmux;
-mod ttyd;
+mod runner;
 mod util;
 
 fn main() {
     let server_port = 6969;
 
-    let web_interface_port = 6970;
-    let web_interface_username = "asd";
-    let web_interface_password = "fgh";
-
     let server_data_folder = &util::expand_tilde("~/server/some-server");
     let backup_folder = &util::expand_tilde("~/server/backup");
 
     //////////////////////////////////////////////////
-
-    let tmux = tmux::Tmux::new().unwrap();
-    let ttyd = ttyd::Ttyd::new().unwrap();
 
     backup::main(
         server_data_folder,
@@ -30,23 +20,22 @@ fn main() {
     )
     .unwrap();
 
-    let _kill_spawned_ttyd = ttyd
-        .spawn(
-            web_interface_port,
-            web_interface_username,
-            web_interface_password,
-        )
-        .unwrap();
+    let cmd = &[
+        "cargo",
+        "run",
+        "--",
+        "--addr",
+        &format!("0.0.0.0:{server_port}"),
+    ];
 
-    tmux.run(
-        server_data_folder,
-        &[
-            "cargo",
-            "run",
-            "--",
-            "--addr",
-            &format!("0.0.0.0:{server_port}"),
-        ],
-    )
-    .unwrap();
+    runner::simple::run(server_data_folder, cmd).unwrap();
+    //
+    // runner::tmux_ttyd::run(
+    //     server_data_folder,
+    //     cmd,
+    //     6970,
+    //     "asd",
+    //     "fgh",
+    // )
+    // .unwrap();
 }

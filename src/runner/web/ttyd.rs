@@ -1,4 +1,6 @@
-use crate::tmux;
+// TODO: Other users on the machine can see the password. --credential asd:fgh is a command-line argument, so ps -ef shows it to every user.
+
+use super::tmux;
 use crate::util;
 use std::process::{Child, Command, Stdio};
 
