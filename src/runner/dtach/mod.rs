@@ -32,6 +32,6 @@ impl RunnerDtach {
 
         // `-N` -> new session, does not daemonize, blocks until the command finishes
         // dtach does return the command's exit code (unlike fucking tmux)
-        util::run(dir, &[&["dtach", "-N", &socket], cmd].concat())
+        util::run(dir, &[&["dtach", "-c", &socket], cmd].concat())
     }
 }
