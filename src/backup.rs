@@ -1,6 +1,4 @@
 // TODO: maybe link the github repo to this one and make it private
-// TODO: remove cmdline parsing and shit like that
-// TODO: remove the unneeded cargo dependencies
 
 // TODO: add support for keeping snapshots once a month indefinetely
 
