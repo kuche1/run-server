@@ -1,9 +1,10 @@
 use crate::util;
+use std::os::unix::fs::OpenOptionsExt;
 
 const SESSION_NAME: &str = "my-session";
 // TODO: use in ttyd
 
-const ENV_VAR_TMP_DIR: &str = "XDG_RUNTIME_DIR";
+const ENV_VAR_USER: &str = "USER";
 
 pub struct Tmux {}
 
@@ -18,27 +19,31 @@ impl Tmux {
     }
 
     pub fn run(&self, dir: &str, cmd: &[&str]) -> Result<(), String> {
-        let tmp_dir = match std::env::var(ENV_VAR_TMP_DIR) {
+        let user = match std::env::var(ENV_VAR_USER) {
             Ok(ok) => ok,
-            Err(err) => return Err(format!("{err} -> {ENV_VAR_TMP_DIR}")),
+            Err(err) => return Err(format!("{err} -> {ENV_VAR_USER}")),
         };
 
-        let file_return_code = &format!("{tmp_dir}/server-return-code");
+        let file_return_code = &format!("/tmp/{user}_server-return-code");
 
         // this may prove to be a bad idea
-        if std::path::Path::new(&file_return_code).exists() {
-            return Err(format!(
-                "Server is already running OR has been brutally interrupted -> File exists -> {file_return_code}"
-            ));
-        }
-
-        match std::fs::write(&file_return_code, "") {
-            Ok(()) => {}
-            Err(err) => return Err(format!("{err} -> {file_return_code}")),
+        // in that case it can be removed inthe future
+        match std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600) // only this user can read/write to this file
+            .open(file_return_code)
+        {
+            Ok(_) => {}
+            Err(err) => {
+                return Err(format!(
+                    "Probably the server is already running or has been brutally interrupted -> {err} -> {file_return_code}"
+                ));
+            }
         }
 
         // deletes the file when the function returns
-        // if the variable name is set to `_` its going to get dropped immediately
+        // if the variable name is set to `_` its going to get removed immediately instead
         let _delete_file_return_code = DeleteOnDrop(file_return_code);
 
         let script_get_return_code = format!("\"$@\"; echo $? > {file_return_code}");
