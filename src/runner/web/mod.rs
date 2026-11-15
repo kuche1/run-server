@@ -5,6 +5,7 @@ use ttyd::Ttyd;
 
 const SESSION_NAME: &str = "my-session";
 
+/// Runs the command in a tmux session, and makes it available in the browser via ttyd
 pub struct RunnerWeb {
     tmux: Tmux,
     ttyd: Ttyd,
@@ -13,7 +14,6 @@ pub struct RunnerWeb {
     web_interface_password: String,
 }
 
-/// runs the command in a tmux session, and makes it available in the browser via ttyd
 impl RunnerWeb {
     #[allow(dead_code)]
     pub fn new(

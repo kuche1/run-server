@@ -2,11 +2,11 @@ use crate::runner::util::tmux::Tmux;
 
 const SESSION_NAME: &str = "my-session";
 
+/// Runs the command in a tmux session
 pub struct RunnerTmux {
     tmux: Tmux,
 }
 
-/// runs the command in a tmux session
 impl RunnerTmux {
     #[allow(dead_code)]
     pub fn new() -> Result<Self, String> {

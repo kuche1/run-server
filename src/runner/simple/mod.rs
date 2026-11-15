@@ -1,9 +1,8 @@
 use crate::util;
 
-#[allow(dead_code)]
+/// Runs the command directly in the current terminal
 pub struct RunnerSimple {}
 
-/// runs the command directly in the current terminal
 impl RunnerSimple {
     #[allow(dead_code)]
     pub fn new() -> Result<Self, String> {
