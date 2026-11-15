@@ -1,4 +1,3 @@
-// TODO: The web interface can open a full shell. Anyone logged into ttyd can press Ctrl+b c in tmux and get a shell as your server user, not just the server console. The no-bindings tmux config from earlier (-L + unbind -a) blocks that.
 // TODO: Other users on the machine can see the password. --credential asd:fgh is a command-line argument, so ps -ef shows it to every user.
 
 mod backup;
