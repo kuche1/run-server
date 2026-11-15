@@ -1,4 +1,4 @@
-use crate::util;
+use crate::runner::tmux;
 use std::os::unix::fs::OpenOptionsExt;
 
 pub const SESSION_NAME: &str = "my-session";
@@ -7,16 +7,15 @@ const ENV_VAR_USER: &str = "USER";
 
 const TMUX_CHANNEL_DONE: &str = "my-session-done";
 
-pub struct Tmux {}
+pub struct Tmux {
+    tmux: tmux::Tmux,
+}
 
 impl Tmux {
     pub fn new() -> Result<Self, String> {
-        match util::run(".", &["tmux", "-V"]) {
-            Ok(()) => {}
-            Err(err) => return Err(format!("Tmux is probably not installed -> {err}")),
-        };
-
-        Ok(Tmux {})
+        Ok(Tmux {
+            tmux: tmux::Tmux::new()?,
+        })
     }
 
     // TODO: make this stdin and stdout be /dev/null ?
@@ -56,11 +55,10 @@ impl Tmux {
         // `trap : INT` so that ctrl+c only kills the command, and not `bash` (otherwise `echo` never runs)
         // let script_get_return_code = format!("trap : INT; \"$@\"; echo $? > {file_return_code}");
 
-        util::run(
+        self.tmux.run(
             dir,
             &[
                 &[
-                    "tmux",
                     "new",
                     "-d", // detached, so that it also works without a terminal (systemd)
                     "-s",
@@ -80,7 +78,7 @@ impl Tmux {
         )?;
 
         // block until the command finishes
-        util::run(".", &["tmux", "wait-for", TMUX_CHANNEL_DONE])?;
+        self.tmux.run(".", &["wait-for", TMUX_CHANNEL_DONE])?;
 
         let code = match std::fs::read_to_string(file_return_code) {
             Ok(code) => code,
