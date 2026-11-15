@@ -5,6 +5,8 @@ pub const SESSION_NAME: &str = "my-session";
 
 const ENV_VAR_USER: &str = "USER";
 
+const TMUX_CHANNEL_DONE: &str = "my-session-done";
+
 pub struct Tmux {}
 
 impl Tmux {
@@ -47,7 +49,8 @@ impl Tmux {
         // if the variable name is set to `_` its going to get removed immediately instead
         let _delete_file_return_code = DeleteOnDrop(file_return_code);
 
-        let script_get_return_code = format!("\"$@\"; echo $? > {file_return_code}");
+        let script_get_return_code =
+            format!("\"$@\"; echo $? > {file_return_code}; tmux wait-for -S {TMUX_CHANNEL_DONE}");
         //
         ////// this may (should) become an issue again in the future but i will keep it commented out for now
         // `trap : INT` so that ctrl+c only kills the command, and not `bash` (otherwise `echo` never runs)
@@ -59,6 +62,7 @@ impl Tmux {
                 &[
                     "tmux",
                     "new",
+                    "-d", // detached, so that it also works without a terminal (systemd)
                     "-s",
                     SESSION_NAME,
                     "--",
@@ -74,6 +78,9 @@ impl Tmux {
             ]
             .concat(),
         )?;
+
+        // block until the command finishes
+        util::run(".", &["tmux", "wait-for", TMUX_CHANNEL_DONE])?;
 
         let code = match std::fs::read_to_string(file_return_code) {
             Ok(code) => code,
