@@ -30,8 +30,9 @@ impl RunnerDtach {
         // absolute path since the command below runs in `dir` and not in cwd
         let socket = cwd.join(SOCKET).display().to_string();
 
-        // `-N` -> new session, does not daemonize, blocks until the command finishes
         // dtach does return the command's exit code (unlike fucking tmux)
-        util::run(dir, &[&["dtach", "-c", &socket], cmd].concat())
+        // `-N` -> new session, does not daemonize, blocks until the command finishes
+        // `-c` does not work if running as a systemd service
+        util::run(dir, &[&["dtach", "-N", &socket], cmd].concat())
     }
 }
