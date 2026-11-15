@@ -1,21 +1,8 @@
-mod config;
-
-use std::process::Command;
+mod util;
 
 fn main() {
-    let dir = shellexpand::tilde(config::WORKING_DIRECTORY);
-
-    // match env::set_current_dir(dir.as_ref()) {
-    //     Ok(()) => {}
-    //     Err(err) => {
-    //         eprintln!("Could not change directory -> {dir} -> {err}");
-    //         std::process::exit(1);
-    //     }
-    // }
-
-    Command::new(config::RUN_SERVER[0])
-        .args(&config::RUN_SERVER[1..])
-        .current_dir(dir.as_ref())
-        .status()
-        .unwrap();
+    util::run(
+        &util::expand_tilde("~/server/some-server"),
+        &["cargo", "run", "--", "--addr", "0.0.0.0:6969"],
+    );
 }
