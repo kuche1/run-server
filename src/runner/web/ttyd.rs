@@ -1,6 +1,5 @@
 // TODO: Other users on the machine can see the password. --credential asd:fgh is a command-line argument, so ps -ef shows it to every user.
 
-use super::tmux;
 use crate::util;
 use std::process::{Child, Command, Stdio};
 
@@ -16,11 +15,11 @@ impl Ttyd {
         Ok(Ttyd {})
     }
 
-    pub fn spawn(&self, port: u16, username: &str, password: &str) -> Result<TtydProcess, String> {
+    pub fn spawn(&self, port: u16, username: &str, password: &str, tmux_session: &str) -> Result<TtydProcess, String> {
         let port = port.to_string();
         let credentials = format!("{username}:{password}");
 
-        let tmux_session = format!("={}", tmux::SESSION_NAME);
+        let tmux_session = format!("={tmux_session}");
         // `=` means exact name match
 
         let cmd = [

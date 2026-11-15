@@ -1,3 +1,6 @@
+// TODO: add runner preparation as a separate step - simply make all the runners structs
+// TODO: add tmux runner
+
 mod backup;
 mod runner;
 mod util;
