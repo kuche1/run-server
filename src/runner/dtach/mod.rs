@@ -1,5 +1,3 @@
-// TODO: check if the foreground stuff really does not work
-
 use crate::util;
 
 const SOCKET: &str = "dtach.sock";

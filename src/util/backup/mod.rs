@@ -1,5 +1,3 @@
-// TODO: maybe link the github repo to this one and make it private
-
 // TODO: add support for keeping snapshots once a month indefinetely
 
 // This code has been copy-pasted from another project, so not eveything might make perfect
