@@ -18,7 +18,7 @@ fn main() {
     )
     .unwrap();
 
-    util::run(
+    tmux.run(
         server_data_folder,
         &["cargo", "run", "--", "--addr", "0.0.0.0:6969"],
     )
