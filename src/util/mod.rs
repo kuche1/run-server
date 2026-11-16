@@ -1,4 +1,5 @@
 pub mod backup;
+pub mod backup_v2;
 
 use std::process::Command;
 
